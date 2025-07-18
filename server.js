@@ -1,53 +1,54 @@
-const express = require("express");
-const axios = require("axios");
-const cheerio = require("cheerio");
-const path = require("path");
+const express = require('express');
+const axios = require('axios');
+const cheerio = require('cheerio');
+const path = require('path');
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, 'public')));
 
-async function getScreenerData(symbol) {
-  const url = `https://www.screener.in/company/${symbol}/`;
+app.get('/api/screener/:symbol', async (req, res) => {
+  const symbol = req.params.symbol.toUpperCase();
+  const url = `https://www.screener.in/company/${symbol}/consolidated/`;
 
   try {
-    const { data: html } = await axios.get(url, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-        "Accept": "text/html,application/xhtml+xml",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Referer": "https://www.google.com/",
-      },
-    });
-
+    const { data: html } = await axios.get(url);
     const $ = cheerio.load(html);
 
-    const rawName = $("h1").first().text().trim();
-    const name = rawName.split(/\n/)[0].trim();
+    const companyName = $('h1').first().text().trim();
+    const stats = {};
 
-    return {
-      companyName: name,
-      marketCap: $("li:contains('Market Cap') span.number").text().trim(),
-      currentPrice: $("li:contains('Current Price') span.number").text().trim(),
-      roe: $("li:contains('ROE') span.number").text().trim(),
-      pe: $("li:contains('Stock P/E') span.number").text().trim(),
-    };
+    $('ul.card').each((i, el) => {
+      $(el)
+        .find('li')
+        .each((j, li) => {
+          const label = $(li).find('span').first().text().trim();
+          const value = $(li).find('span').last().text().trim();
+          if (label.includes('Market Cap')) stats.marketCap = value;
+          if (label.includes('Stock P/E')) stats.pe = value;
+          if (label.includes('Industry P/E')) stats.industryPE = value;
+          if (label.includes('ROE')) stats.roe = value;
+          if (label.includes('Promoter Holding')) stats.promoterHolding = value;
+          if (label.includes('Change in Promoter Holding')) stats.promoterChange = value;
+          if (label.includes('FII Holding')) stats.fiiHolding = value;
+          if (label.includes('Current ratio')) stats.currentRatio = value;
+        });
+    });
+
+    const priceText = $('.company-info .number').first().text().trim();
+
+    res.json({
+      companyName,
+      currentPrice: priceText,
+      url,
+      ...stats
+    });
   } catch (error) {
-    console.error("❌ Screener Fetch Failed:", error.message);
-    throw new Error("Screener blocked or symbol invalid.");
-  }
-}
-
-app.get("/api/screener/:symbol", async (req, res) => {
-  try {
-    const data = await getScreenerData(req.params.symbol.toUpperCase());
-    res.json(data);
-  } catch (err) {
-    console.error("Screener error:", err.message);
-    res.status(500).json({ error: "Screener fetch failed or symbol not found" });
+    console.error('❌ Screener fetch error:', error.message);
+    res.status(500).json({ error: 'Stock not found or error occurred.' });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`\u2705 Server running at http://localhost:${PORT}`);
+  console.log(`✅ Server running at http://localhost:${PORT}`);
 });
