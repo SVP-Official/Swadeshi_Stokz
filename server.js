@@ -2,7 +2,8 @@ const express = require('express'); const axios = require('axios'); const cheeri
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/api/screener/:symbol', async (req, res) => { const symbol = req.params.symbol.toUpperCase(); const screenerUrl = https://www.screener.in/company/${symbol}/consolidated/; const intradayUrl = https://www.intradayscreener.com/company/${symbol};
+app.get('/api/screener/:symbol', async (req, res) => { const symbol = req.params.symbol.toUpperCase(); const screenerUrl = `https://www.screener.in/company/${symbol}/consolidated/`;
+const intradayUrl = `https://www.intradayscreener.com/company/${symbol}`;
 
 const stats = { companyName: '', currentPrice: '', url: screenerUrl };
 
