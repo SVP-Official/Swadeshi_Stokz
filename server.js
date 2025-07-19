@@ -1,4 +1,6 @@
-// server.js (rollback to original working code for accurate current price) const express = require('express'); const axios = require('axios'); const cheerio = require('cheerio'); const path = require('path'); const app = express(); const PORT = process.env.PORT || 3000;
+// server.js (rollback to original working code for accurate current price) 
+
+const express = require('express'); const axios = require('axios'); const cheerio = require('cheerio'); const path = require('path'); const app = express(); const PORT = process.env.PORT || 3000;
 
 app.use(express.static(path.join(__dirname, 'public')));
 
