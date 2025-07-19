@@ -1,24 +1,46 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>StoxPulse</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
-</head>
-<body>
-  <div class="container">
-    <h1 class="app-title">StoxPulse</h1>
-    <form id="stockForm">
-      <input type="text" id="symbolInput" placeholder="Enter Stock Symbol (e.g. INFY)" required />
-      <button type="submit">Search</button>
-    </form>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stox Pulse</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="app-title">
+        <img src="logo.png" alt="Stox Pulse Logo" class="app-logo" />
+        Stox Pulse
+      </h1>
+      <form id="stockForm">
+        <div class="search-box">
+          <input
+            type="text"
+            id="symbolInput"
+            placeholder="Enter Stock Symbol (e.g. INFY)"
+            required
+          />
+          <button type="submit">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#FFFFFF"
+              stroke-width="2"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </button>
+        </div>
+      </form>
 
-    <div id="loader" class="hidden">Loading...</div>
-    <div id="stockBox" class="hidden"></div>
-  </div>
+      <div id="loader" class="loader hidden">
+        <span class="spinner"></span> Loading...
+      </div>
+      <div id="stockBox" class="stock-box hidden"></div>
+    </div>
 
-  <script src="script.js"></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
