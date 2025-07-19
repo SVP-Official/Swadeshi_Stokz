@@ -1,12 +1,13 @@
 body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #121212;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #111;
   color: #fff;
+  margin: 0;
+  padding: 0;
 }
 
 .container {
-  max-width: 900px;
+  max-width: 800px;
   margin: auto;
   padding: 2rem;
   text-align: center;
@@ -14,59 +15,76 @@ body {
 
 .app-title {
   font-size: 2.5rem;
-  margin-bottom: 1rem;
-  color: #00e676;
+  margin-bottom: 1.5rem;
+  color: #00ff99;
 }
 
 form {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.8rem;
-  margin-bottom: 2rem;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 1rem;
 }
 
 input[type="text"] {
-  padding: 0.8rem;
+  padding: 10px;
   font-size: 1rem;
-  width: 80%;
-  max-width: 400px;
+  width: 250px;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 button {
-  padding: 0.8rem 1.5rem;
+  padding: 10px 20px;
   font-size: 1rem;
-  background-color: #00e676;
+  background-color: #00ff99;
   color: #000;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #00c853;
+  background-color: #00cc7a;
+}
+
+#loader {
+  font-size: 1.2rem;
+  margin-top: 1rem;
+}
+
+.hidden {
+  display: none;
 }
 
 #stockBox {
-  background-color: #1e1e1e;
-  border: 1px solid #333;
-  border-radius: 10px;
+  background-color: #222;
   padding: 1.5rem;
+  border-radius: 10px;
   margin-top: 1rem;
   text-align: left;
+  box-shadow: 0 0 10px #00ff99;
+}
+
+#stockBox img.logo {
+  height: 40px;
+  width: 40px;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+#stockBox h2 {
+  display: flex;
+  align-items: center;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
 }
 
 #stockBox a {
-  color: #00e676;
+  color: #00ccff;
   text-decoration: none;
 }
 
 #stockBox a:hover {
   text-decoration: underline;
-}
-
-.hidden {
-  display: none;
 }
