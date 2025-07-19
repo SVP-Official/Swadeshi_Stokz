@@ -14,7 +14,6 @@ const stats = {};
 // Scrape key stats
 $('.company-ratios li, .ranges li, .about span').each((i, el) => {
   const label = $(el).text();
-  const priceText = $("li:contains('Current Price') span.number").text().trim();
   if (label.includes('Market Cap')) stats.marketCap = $(el).find('span').last().text().trim();
   if (label.includes('Stock P/E')) stats.pe = $(el).find('span').last().text().trim();
   if (label.includes('Industry P/E')) stats.industryPE = $(el).find('span').last().text().trim();
@@ -26,7 +25,7 @@ $('.company-ratios li, .ranges li, .about span').each((i, el) => {
 });
 
 // Price scrape fallback
-//const priceText = $('.company-info .number').first().text().trim() || $('h4:contains("Current Price")').next().text().trim();
+const priceText = $("li:contains('Current Price') span.number").text().trim();
 
 res.json({
   companyName,
