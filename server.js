@@ -36,5 +36,5 @@ res.json({
 
 } catch (error) { console.error('❌ Screener fetch error:', error.message); res.status(500).json({ error: 'Stock not found or error occurred.' }); } });
 
-app.listen(PORT, () => { console.log(✅ Server running at http://localhost:${PORT}); });
+app.listen(PORT, () => { console.log(`✅ Server running at http://localhost:${PORT}`); });
 
