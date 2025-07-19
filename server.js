@@ -24,9 +24,8 @@ app.get('/api/screener/:symbol', async (req, res) => {
 
     stats.companyName = $('h1').first().text().trim();
 
-    // ✅ Correct price extraction from Screener
-    const priceEl = $('h4:contains("Current Price")').next('span').first();
-    stats.currentPrice = priceEl.text().trim();
+    stats.currentPrice = $('.company-info .number').first().text().trim();
+
 
     $('.company-ratios li, .ranges li, .about span').each((i, el) => {
       const label = $(el).text();
