@@ -4,7 +4,7 @@ const express = require('express'); const axios = require('axios'); const cheeri
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/api/screener/:symbol', async (req, res) => { const symbol = req.params.symbol.toUpperCase(); const url = https://www.screener.in/company/${symbol}/consolidated/;
+app.get('/api/screener/:symbol', async (req, res) => { const symbol = req.params.symbol.toUpperCase(); const url = `https://www.screener.in/company/${symbol}/consolidated/`;
 
 try { const { data: html } = await axios.get(url); const $ = cheerio.load(html);
 
