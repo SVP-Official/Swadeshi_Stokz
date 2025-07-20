@@ -1,0 +1,167 @@
+/* Importing Google Font for the main title (Stox Pulse) */
+@import url('https://fonts.googleapis.com/css2?family=Saira:wght@600&display=swap');
+
+/* Page background and base layout */
+body {
+  background-color: #0B1641;
+  color: white;
+  font-family: sans-serif;
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+/* Container for all content (center aligned) */
+.container {
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Pill-shaped search bar wrapper */
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1D213A;
+  padding: 5px;
+  border-radius: 50px;
+  box-shadow: 0 0 10px #39CC89;
+}
+
+/* Input field inside search bar */
+input {
+  border: none;
+  background: transparent;
+  color: white;
+  padding: 10px 20px;
+  outline: none;
+  width: 70%;
+}
+
+/* Circular green search button */
+button {
+  background-color: #39CC89;
+  border: none;
+  border-radius: 50%;
+  padding: 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Button hover animation (pulsing effect) */
+button:hover {
+  animation: pulse 1s infinite;
+}
+
+/* Keyframes for button pulse animation */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Chart icon inside the button */
+.chart-icon {
+  width: auto;
+  height: 45px;
+  margin-left: 10px;
+}
+
+/* Loader spinner + text while fetching data */
+.loader {
+  margin-top: 20px;
+  display: none;
+  color: #39CC89;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Spinner animation inside loader */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid #39CC89;
+  border-top: 3px solid transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Card showing stock data */
+.card {
+  background-color: #1D213A;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 30px;
+  color: white;
+  display: none;
+  text-align: left;
+}
+
+/* Company logo inside stock card */
+.card img {
+  width: 40px;
+  height: 40px;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+/* Stock name title inside card */
+.card h2 {
+  display: flex;
+  align-items: center;
+  color: #39CC89;
+}
+
+/* Rows showing each stock info line */
+.info {
+  margin: 8px 0;
+  color: #FFFFFF;
+}
+
+/* Screener.in external link styling */
+.screener-link {
+  color: #5AB1F5;
+  text-decoration: none;
+}
+
+.screener-link:hover {
+  text-decoration: underline;
+}
+
+/* Error message text */
+.error {
+  color: #F55555;
+}
+
+/* Logo image next to Stox Pulse text */
+.logo-img {
+  height: 75px;
+  width: auto;
+  margin-bottom: 3.5px;
+}
+
+/* Header container with logo and title aligned horizontally */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+/* Main title text (Stox Pulse) with custom font */
+.title {
+  font-size: 3em;
+  color: #39CC89;
+  margin: 0;
+  font-family: 'Saira', sans-serif;
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stox Pulse</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="/static/logo.png" alt="Logo" class="logo-img" />
+      <h1 class="title">Stox Pulse</h1>
+    </div>
+
+    <div class="search-container">
+      <img src="/static/chart-icon.png" class="chart-icon" />
+      <input type="text" id="stockSymbol" placeholder="Enter Stock Symbol..." />
+      <button onclick="searchStock()">🔍</button>
+    </div>
+
+    <!-- Loader (fixed alignment + spinner animation) -->
+    <div class="loader" id="loader">
+      <div class="spinner"></div>
+      <span>Loading...</span>
+    </div>
+
+    <!-- Result Card -->
+    <div class="card" id="resultCard">
+      <h2><img id="stockLogo" src="" alt="" /> <span id="stockName"></span></h2>
+      <p class="info" id="stockPrice"></p>
+      <p class="info" id="marketCap"></p>
+      <p class="info" id="peRatio"></p>
+      <p class="info" id="roe"></p>
+      <p class="info">
+        <a id="screenerLink" href="#" class="screener-link" target="_blank">More on Screener.in</a>
+      </p>
+    </div>
+
+    <!-- Error Message -->
+    <p class="error" id="errorMessage"></p>
+  </div>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
