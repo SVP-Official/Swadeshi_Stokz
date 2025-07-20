@@ -29,10 +29,42 @@
     <!-- Result Card -->
     <div class="card" id="resultCard">
       <h2><img id="stockLogo" src="" alt="" /> <span id="stockName"></span></h2>
+
+      <!-- Basic Price Information (always show) -->
       <p class="info" id="stockPrice"></p>
       <p class="info" id="marketCap"></p>
-      <p class="info" id="peRatio"></p>
-      <p class="info" id="roe"></p>
+
+      <!-- Valuation Metrics Section -->
+      <div class="metrics-section">
+        <h3 class="section-title">📊 Valuation Metrics</h3>
+        <p class="info" id="peRatio"></p>
+        <p class="info" id="industryPe" style="display: none;"></p>
+        <p class="info" id="bookValue"></p>
+      </div>
+
+      <!-- Profitability & Returns Section (always show - has ROE and Dividend) -->
+      <div class="metrics-section">
+        <h3 class="section-title">💰 Profitability & Returns</h3>
+        <p class="info" id="roe"></p>
+        <p class="info" id="dividendYield"></p>
+      </div>
+
+      <!-- Financial Health Section -->
+      <div class="metrics-section">
+        <h3 class="section-title">🏥 Financial Health</h3>
+        <p class="info" id="currentRatio" style="display: none;"></p>
+        <p class="info" id="debtToEquity" style="display: none;"></p>
+      </div>
+
+      <!-- Shareholding Pattern Section -->
+      <div class="metrics-section">
+        <h3 class="section-title">👥 Shareholding Pattern</h3>
+        <p class="info" id="promoterHolding"></p>
+        <p class="info" id="promoterChange" style="display: none;"></p>
+        <p class="info" id="fiiHolding"></p>
+      </div>
+
+      <!-- External Link -->
       <p class="info">
         <a id="screenerLink" href="#" class="screener-link" target="_blank">More on Screener.in</a>
       </p>
