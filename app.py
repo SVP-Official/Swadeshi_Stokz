@@ -36,15 +36,139 @@ def is_valid_stock_symbol(symbol):
     # Only allow alphabetic characters (no numbers, spaces, special chars)
     return symbol.isalpha()
 
+# Function to clean percentage values (remove double %)
+def clean_percentage_value(value):
+    """
+    Clean percentage values to avoid double % symbols
+    """
+    if isinstance(value, str) and value != "N/A":
+        # Remove extra % symbols and clean the value
+        cleaned = value.replace('%%', '%').strip()
+        # If it already has %, don't add another one
+        if cleaned.endswith('%'):
+            return cleaned.rstrip('%')  # Remove % so we can add it consistently in frontend
+        return cleaned
+    return value
+
+# Enhanced function to extract data from various HTML structures
+def extract_metric_value(soup, patterns, fallback_patterns=None):
+    """
+    Extract metric value using multiple patterns and fallback options
+    """
+    all_patterns = patterns + (fallback_patterns or [])
+
+    for pattern in all_patterns:
+        # Check in li elements with class="flex flex-space-between"
+        for li in soup.find_all("li", class_="flex"):
+            li_text = li.get_text()
+            if any(keyword.lower() in li_text.lower() for keyword in pattern):
+                number_span = li.find("span", class_="number")
+                if number_span:
+                    return clean_percentage_value(number_span.text.strip())
+
+        # Check in table rows (improved)
+        for table in soup.find_all("table"):
+            for tr in table.find_all("tr"):
+                tr_text = tr.get_text()
+                if any(keyword.lower() in tr_text.lower() for keyword in pattern):
+                    td_elements = tr.find_all("td")
+                    if len(td_elements) >= 2:
+                        # Try last cell first, then second cell
+                        for td in reversed(td_elements):
+                            text = td.get_text().strip()
+                            if text and not text.isalpha() and text != "" and text != "-":
+                                return clean_percentage_value(text)
+
+        # Check in simple li elements
+        for li in soup.find_all("li"):
+            li_text = li.get_text()
+            if any(keyword.lower() in li_text.lower() for keyword in pattern):
+                number_span = li.find("span", class_="number")
+                if number_span:
+                    return clean_percentage_value(number_span.text.strip())
+
+                # Extract number from text if no span found
+                # Look for patterns like "Debt to Equity: 0.25" or "Current Ratio: 1.5"
+                for keyword in pattern:
+                    if keyword.lower() in li_text.lower():
+                        # Split by the keyword and get the part after it
+                        parts = li_text.lower().split(keyword.lower())
+                        if len(parts) > 1:
+                            after_keyword = parts[1]
+                            # Extract numbers (including decimals)
+                            numbers = re.findall(r'[\d,]+\.?\d*', after_keyword)
+                            if numbers:
+                                return clean_percentage_value(numbers[0])
+
+        # Check in div and span elements
+        for element in soup.find_all(["div", "span"]):
+            element_text = element.get_text()
+            if any(keyword.lower() in element_text.lower() for keyword in pattern):
+                # Look for numbers in the element
+                numbers = re.findall(r'[\d,]+\.?\d*', element_text)
+                if numbers:
+                    return clean_percentage_value(numbers[-1])
+
+    return "N/A"
+
+# Function to try alternative data sources
+def get_alternative_financial_data(symbol):
+    """
+    Try to get financial ratios from alternative patterns or calculations
+    """
+    try:
+        url = f"https://www.screener.in/company/{symbol}/"
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
+        response = requests.get(url, headers=headers, timeout=10)
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # Alternative patterns for missing metrics
+        alternative_data = {}
+
+        # Try to find Current Ratio in financial statements section
+        for section in soup.find_all(["section", "div"], class_=re.compile(r'.*financial.*|.*ratio.*|.*balance.*', re.I)):
+            text = section.get_text()
+            if "current ratio" in text.lower():
+                numbers = re.findall(r'[\d,]+\.?\d+', text)
+                if numbers:
+                    alternative_data['current_ratio'] = numbers[-1]
+                    break
+
+        # Try to find Debt to Equity in balance sheet section
+        for section in soup.find_all(["section", "div"], class_=re.compile(r'.*balance.*|.*debt.*|.*financial.*', re.I)):
+            text = section.get_text()
+            if "debt" in text.lower() and "equity" in text.lower():
+                numbers = re.findall(r'[\d,]+\.?\d+', text)
+                if numbers:
+                    alternative_data['debt_to_equity'] = numbers[-1]
+                    break
+
+        # Try to find Industry PE in comparison sections
+        for section in soup.find_all(["div", "section"]):
+            text = section.get_text()
+            if "industry" in text.lower() and ("p/e" in text.lower() or "pe" in text.lower()):
+                numbers = re.findall(r'[\d,]+\.?\d+', text)
+                if numbers:
+                    alternative_data['industry_pe'] = numbers[-1]
+                    break
+
+        return alternative_data
+
+    except Exception as e:
+        logger.error(f"Error in alternative data fetch: {str(e)}")
+        return {}
+
 # Function to fetch stock data from Screener.in
 def fetch_stock_data(symbol):
     try:
         # Build Screener.in URL for the stock
         url = f"https://www.screener.in/company/{symbol}/"
         headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
         }
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, timeout=10)
 
         # Check if the stock page exists (Screener.in returns 404 for invalid symbols)
         if response.status_code == 404:
@@ -58,7 +182,6 @@ def fetch_stock_data(symbol):
         name = name_tag.text.strip() if name_tag else "N/A"
 
         # Additional validation: Check if we're actually on a stock page
-        # Valid stock pages should have company name and basic stock data
         if name == "N/A" or "Page not found" in response.text or "404" in response.text:
             return {"error": "Stock symbol not found"}
 
@@ -72,7 +195,6 @@ def fetch_stock_data(symbol):
                     break
 
         # Additional validation: A valid stock should have at least a price
-        # If no price is found, it's likely not a valid stock symbol
         if price == "N/A":
             return {"error": "Stock symbol not found"}
 
@@ -106,8 +228,72 @@ def fetch_stock_data(symbol):
             label = li.find("span", class_="name")
             value = li.find("span", class_="number")
             if label and value and "ROE" in label.text:
-                roe = value.text.strip()
+                roe = clean_percentage_value(value.text.strip())
                 break
+
+        # IMPROVED METRICS EXTRACTION WITH MULTIPLE PATTERNS AND ALTERNATIVES
+
+        # Extract Promoter Holding % - multiple search patterns
+        promoter_holding = extract_metric_value(
+            soup,
+            [["Promoters"], ["Promoter holding"], ["Promoter Holding"], ["Promoter"]]
+        )
+
+        # Extract Change in Promoter Holding % - multiple search patterns  
+        promoter_change = extract_metric_value(
+            soup,
+            [["Change in promoter holding"], ["Chg in promoter holding"], 
+             ["Promoter change"], ["Change in Promoters"], ["promoter holding change"]]
+        )
+
+        # Extract FII Holding % - multiple search patterns
+        fii_holding = extract_metric_value(
+            soup,
+            [["FII"], ["Foreign"], ["FPI"], ["Foreign Institutional"], ["Foreign Portfolio"]]
+        )
+
+        # Extract Industry P/E - multiple search patterns
+        industry_pe = extract_metric_value(
+            soup,
+            [["Industry P/E"], ["Industry PE"], ["Sector P/E"], ["Sector PE"], ["Peer P/E"]]
+        )
+
+        # Extract Current Ratio - multiple search patterns
+        current_ratio = extract_metric_value(
+            soup,
+            [["Current ratio"], ["Current Ratio"], ["Liquidity Ratio"]]
+        )
+
+        # Extract Book Value per Share - multiple search patterns
+        book_value = extract_metric_value(
+            soup,
+            [["Book value"], ["Book Value"], ["Book value per share"]]
+        )
+
+        # Extract Dividend Yield - multiple search patterns
+        dividend_yield = extract_metric_value(
+            soup,
+            [["Dividend yield"], ["Dividend Yield"], ["Div Yield"]]
+        )
+
+        # Extract Debt to Equity ratio - multiple search patterns
+        debt_to_equity = extract_metric_value(
+            soup,
+            [["Debt to equity"], ["D/E"], ["Debt-to-equity"], ["Debt/Equity"], ["DE Ratio"]]
+        )
+
+        # Try alternative data sources for missing values
+        alternative_data = get_alternative_financial_data(symbol)
+
+        # Fill in missing values from alternative sources
+        if current_ratio == "N/A" and 'current_ratio' in alternative_data:
+            current_ratio = alternative_data['current_ratio']
+
+        if debt_to_equity == "N/A" and 'debt_to_equity' in alternative_data:
+            debt_to_equity = alternative_data['debt_to_equity']
+
+        if industry_pe == "N/A" and 'industry_pe' in alternative_data:
+            industry_pe = alternative_data['industry_pe']
 
         # Generate company logo URL with fallback
         primary_logo = f"https://logo.clearbit.com/{symbol.lower()}.com"
@@ -124,15 +310,26 @@ def fetch_stock_data(symbol):
             # Use fallback avatar generator if request fails
             logo_url = f"https://ui-avatars.com/api/?name={symbol}&background=39CC89&color=fff&size=64"
 
-        # Return structured stock data
+        # Return structured stock data (EXISTING DATA + IMPROVED NEW METRICS)
         return {
+            # Existing metrics (keeping exactly as they were)
             "name": name,
             "price": price,
             "pe_ratio": pe_ratio,
             "roe": roe,
             "market_cap": market_cap,
             "logo": logo_url,
-            "link": url
+            "link": url,
+
+            # Improved new metrics extraction (cleaned values)
+            "promoter_holding": promoter_holding,
+            "promoter_change": promoter_change,
+            "fii_holding": fii_holding,
+            "industry_pe": industry_pe,
+            "current_ratio": current_ratio,
+            "book_value": book_value,
+            "dividend_yield": dividend_yield,
+            "debt_to_equity": debt_to_equity
         }
 
     except requests.exceptions.RequestException as e:
