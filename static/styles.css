@@ -55,7 +55,6 @@ button:hover {
   animation: pulse 1s infinite;
 }
 
-/* Keyframes for button pulse animation */
 @keyframes pulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.1); }
@@ -80,7 +79,6 @@ button:hover {
   gap: 10px;
 }
 
-/* Spinner animation inside loader */
 .spinner {
   width: 18px;
   height: 18px;
@@ -121,22 +119,18 @@ button:hover {
   color: #39CC89;
 }
 
-/* NEW STYLING FOR METRICS SECTIONS */
-
-/* Individual metrics sections with organized grouping */
+/* Metrics sections */
 .metrics-section {
   margin: 20px 0;
   padding: 15px 0;
   border-top: 1px solid #2A3048;
 }
 
-/* Remove border from first section */
 .metrics-section:first-of-type {
   border-top: 1px solid #2A3048;
   padding-top: 5px;
 }
 
-/* Section title styling with emoji icons */
 .section-title {
   color: #5AB1F5;
   font-size: 1.1em;
@@ -145,15 +139,11 @@ button:hover {
   letter-spacing: 0.5px;
 }
 
-/* END OF NEW METRICS STYLING */
-
-/* Rows showing each stock info line */
 .info {
   margin: 8px 0;
   color: #FFFFFF;
 }
 
-/* Screener.in external link styling */
 .screener-link {
   color: #5AB1F5;
   text-decoration: none;
@@ -163,7 +153,6 @@ button:hover {
   text-decoration: underline;
 }
 
-/* Error message text */
 .error {
   color: #F55555;
 }
@@ -175,7 +164,7 @@ button:hover {
   margin-bottom: 3.5px;
 }
 
-/* Header container with logo and title aligned horizontally */
+/* Header container */
 .header {
   display: flex;
   align-items: center;
@@ -184,10 +173,26 @@ button:hover {
   margin-bottom: 20px;
 }
 
-/* Main title text (Stox Pulse) with custom font */
+/* Title text */
 .title {
   font-size: 3em;
   color: #39CC89;
   margin: 0;
   font-family: 'Saira', sans-serif;
+}
+
+/* ✅ RESPONSIVENESS (Keep logo and title side-by-side on mobile) */
+@media (max-width: 600px) {
+  .logo-img {
+    height: 50px;
+  }
+
+  .title {
+    font-size: 1.8em;
+  }
+
+  .header {
+    flex-direction: row;
+    gap: 6px;
+  }
 }
