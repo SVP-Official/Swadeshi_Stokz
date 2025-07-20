@@ -121,6 +121,32 @@ button:hover {
   color: #39CC89;
 }
 
+/* NEW STYLING FOR METRICS SECTIONS */
+
+/* Individual metrics sections with organized grouping */
+.metrics-section {
+  margin: 20px 0;
+  padding: 15px 0;
+  border-top: 1px solid #2A3048;
+}
+
+/* Remove border from first section */
+.metrics-section:first-of-type {
+  border-top: 1px solid #2A3048;
+  padding-top: 5px;
+}
+
+/* Section title styling with emoji icons */
+.section-title {
+  color: #5AB1F5;
+  font-size: 1.1em;
+  margin: 0 0 10px 0;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* END OF NEW METRICS STYLING */
+
 /* Rows showing each stock info line */
 .info {
   margin: 8px 0;
