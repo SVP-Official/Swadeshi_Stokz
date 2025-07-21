@@ -386,3 +386,48 @@ button:hover {
     margin: 0 5px; /* Small margin for mobile search */
   }
 }
+
+/* Trendlyne PDF link styling */
+.trendlyne-link {
+  color: #f97316 !important;
+  text-decoration: none;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  text-shadow: 0 0 6px rgba(249, 115, 22, 0.5);
+  transition: all 0.3s ease;
+  word-wrap: break-word;
+}
+
+.trendlyne-link:hover {
+  text-decoration: underline;
+  text-shadow: 0 0 10px rgba(249, 115, 22, 0.7);
+  color: #ea580c !important;
+}
+
+/* Autocomplete Suggestion Styles */
+.autocomplete-suggestions {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #0d9488;
+  max-height: 220px;
+  overflow-y: auto;
+  width: calc(100% - 20px);
+  margin: 5px auto 0;
+  z-index: 10;
+  list-style: none;
+  padding: 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(13, 148, 136, 0.15);
+}
+
+.autocomplete-suggestions li {
+  padding: 10px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  color: #134e4a;
+  transition: background 0.2s ease;
+}
+
+.autocomplete-suggestions li:hover {
+  background-color: #ccfbf1;
+}
