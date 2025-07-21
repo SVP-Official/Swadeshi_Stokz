@@ -1,11 +1,11 @@
-// Function to validate stock symbol format
+// Function to validate stock symbol format - UPDATED to allow numbers
 const isValidStockSymbol = (symbol) => {
-  // Stock symbols should be 1-10 characters, letters only
-  if (!symbol || symbol.length < 1 || symbol.length > 10) {
+  // Stock symbols should be 1-15 characters, alphanumeric only
+  if (!symbol || symbol.length < 1 || symbol.length > 15) {
     return false;
   }
-  // Check if symbol contains only alphabetic characters
-  return /^[A-Za-z]+$/.test(symbol);
+  // Check if symbol contains only alphanumeric characters (letters AND numbers)
+  return /^[A-Za-z0-9]+$/.test(symbol);
 };
 
 // Function to format percentage values properly
@@ -76,9 +76,9 @@ const searchStock = () => {
     return;
   }
 
-  // Validate stock symbol format
+  // Validate stock symbol format - UPDATED error message
   if (!isValidStockSymbol(symbol)) {
-    errorMessage.textContent = 'Please enter a valid stock symbol (letters only, no numbers or special characters).';
+    errorMessage.textContent = 'Please enter a valid stock symbol (letters and numbers only, no spaces or special characters).';
     return;
   }
 
