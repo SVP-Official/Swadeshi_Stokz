@@ -1,91 +1,211 @@
-/* Importing Google Font for the main title (Stox Pulse) */
-@import url('https://fonts.googleapis.com/css2?family=Saira:wght@600&display=swap');
+/* Importing Google Fonts - Adding a cleaner font for data */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;500;600;700&display=swap');
 
-/* Page background and base layout */
+/* ==================== COLOR PALETTE SECTION - FROM HERE ==================== */
+/* Main background and text colors */
 body {
-  background-color: #0B1641;
-  color: white;
-  font-family: sans-serif;
+  background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 50%, #99f6e4 100%);
+  color: #134e4a;
+  font-family: 'Orbitron', monospace, sans-serif;
   display: flex;
   justify-content: center;
-  padding: 40px;
+  padding: 20px;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
-/* Container for all content (center aligned) */
+/* Container - laptop optimized, mobile safe */
 .container {
-  max-width: 600px;
-  width: 100%;
+  max-width: 1100px; /* LAPTOP: Maximum width for large screens */
+  min-width: 280px;   /* MOBILE: Minimum width to prevent breaking */
+  width: calc(100% - 40px); /* Safe width calculation with padding consideration */
   text-align: center;
+  border: 2px solid #0d9488;
+  border-radius: 15px;
+  padding: clamp(15px, 4vw, 35px);
+  box-shadow: 0 0 25px rgba(13, 148, 136, 0.2);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  margin: 0 auto;
+  box-sizing: border-box; /* Include padding in width calculation */
 }
 
-/* Pill-shaped search bar wrapper */
+/* Search container */
 .search-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #1D213A;
-  padding: 5px;
+  background: #134e4a;
+  padding: 8px 10px;
   border-radius: 50px;
-  box-shadow: 0 0 10px #39CC89;
+  box-shadow: 0 0 15px rgba(13, 148, 136, 0.3);
+  gap: 10px;
+  border: 1px solid #0d9488;
+  max-width: 500px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
-/* Input field inside search bar */
+/* Input field colors */
 input {
   border: none;
   background: transparent;
-  color: white;
-  padding: 10px 20px;
+  color: #ffffff;
+  padding: 12px 20px;
   outline: none;
-  width: 70%;
+  width: 75%;
+  font-size: 1.1em;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease-in-out;
+  box-sizing: border-box;
+}
+input:focus {
+  border-bottom: 2px solid #5eead4;
+  text-shadow: 0 0 8px rgba(94, 234, 212, 0.5);
+}
+input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
 }
 
-/* Circular green search button */
+/* Button styling */
 button {
-  background-color: #39CC89;
+  background: linear-gradient(45deg, #0d9488, #0f766e);
   border: none;
   border-radius: 50%;
-  padding: 10px;
-  margin-left: 10px;
+  padding: 12px;
+  margin-left: 0;
   cursor: pointer;
-  transition: transform 0.3s ease-in-out;
+  box-shadow: 0 0 12px rgba(13, 148, 136, 0.6);
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 1.3em;
+  transition: all 0.3s ease-in-out;
+  border: 2px solid rgba(13, 148, 136, 0.8);
+  flex-shrink: 0;
 }
-
-/* Button hover animation (pulsing effect) */
 button:hover {
-  animation: pulse 1s infinite;
+  animation: cyberPulse 1.5s infinite;
+  box-shadow: 
+    0 0 20px rgba(13, 148, 136, 0.8),
+    0 0 40px rgba(13, 148, 136, 0.4);
 }
 
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+/* FIXED: Stock data card - proper overflow handling */
+.card {
+  background: #134e4a;
+  border-radius: 15px;
+  padding: clamp(15px, 4vw, 25px); /* Responsive padding */
+  margin: 30px auto 0;
+  color: #f0fdfa;
+  display: none;
+  text-align: left;
+  box-shadow: 0 0 25px rgba(13, 148, 136, 0.2);
+  border: 1px solid rgba(13, 148, 136, 0.3);
+  font-family: 'Inter', sans-serif;
+  max-width: 100%; /* MOBILE FIX: Never exceed container width */
+  width: 100%;
+  box-sizing: border-box; /* Include padding in width calculation */
+  overflow: hidden; /* Prevent content overflow */
+  word-wrap: break-word; /* Break long words if needed */
 }
 
-/* Chart icon inside the button */
-.chart-icon {
-  width: auto;
-  height: 45px;
-  margin-left: 10px;
+/* Info text with controllable spacing */
+.info {
+  margin: 8px 0; /* 🔧 CONTROL GAP: Change this value to adjust spacing between data items */
+  color: #5eead4;
+  font-size: clamp(1rem, 2.5vw, 1.1em); /* Responsive font size */
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.01em;
+  line-height: 1.3;
+  word-wrap: break-word; /* Handle long text */
+  overflow-wrap: break-word; /* Modern browsers */
 }
 
-/* Loader spinner + text while fetching data */
+/* Section titles with controllable spacing */
+.section-title {
+  color: #7dd3fc;
+  font-size: clamp(1.1rem, 3vw, 1.3em); /* Responsive section titles */
+  margin: 5px 0 10px 0; /* 🔧 CONTROL GAP: First value controls gap ABOVE section, last value controls gap BELOW section title */
+  font-weight: 700;
+  font-family: 'Orbitron', monospace;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 8px rgba(125, 211, 252, 0.4);
+  word-wrap: break-word;
+}
+
+/* Links */
+.screener-link {
+  color: #67e8f9;
+  text-decoration: none;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  text-shadow: 0 0 6px rgba(103, 232, 249, 0.5);
+  transition: all 0.3s ease;
+  word-wrap: break-word;
+}
+
+.screener-link:hover {
+  text-decoration: underline;
+  text-shadow: 0 0 10px rgba(103, 232, 249, 0.7);
+}
+
+/* Error messages */
+.error {
+  color: #f87171;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.02em;
+  margin-top: 15px;
+  font-size: clamp(1rem, 2.5vw, 1.1em);
+  text-shadow: 0 0 6px rgba(248, 113, 113, 0.5);
+  word-wrap: break-word;
+}
+
+/* UPDATED: Logo styling - NO HOVER with size control comments */
+.logo-img {
+  height: clamp(55px, 10vw, 95px); /* 🔧 LOGO SIZE: min=45px, responsive=8vw, max=75px */
+  width: auto; /* 🔧 LOGO WIDTH: Keep proportional (or set fixed width like '60px') */
+  margin-bottom: 3px; /* 🔧 LOGO VERTICAL: Adjust up/down position */
+  margin-right: 0px; /* 🔧 LOGO SPACING: Gap between logo and title */
+  filter: drop-shadow(0 0 4px rgba(13, 148, 136, 0.2)); /* 🔧 LOGO SHADOW: Shadow color/size */
+  flex-shrink: 0; /* Prevent shrinking in flexbox */
+}
+/* REMOVED: .logo-img:hover rule completely for no hover effects */
+
+/* Adaptive title that scales properly */
+.title {
+  font-size: clamp(1.5rem, 6vw, 3.4rem);
+  color: #0f766e;
+  margin: 0;
+  font-family: 'Orbitron', monospace, sans-serif;
+  text-shadow: 0 0 15px rgba(15, 118, 110, 0.3);
+  letter-spacing: clamp(0.02em, 0.5vw, 0.06em);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==================== COLOR PALETTE SECTION - TILL HERE ==================== */
+/* ==================== UNIVERSAL STYLES (DON'T CHANGE) ==================== */
+
+/* Loader styling */
 .loader {
   margin-top: 20px;
-  display: none;
-  color: #39CC89;
   display: none;
   align-items: center;
   justify-content: center;
   gap: 10px;
 }
-
 .spinner {
-  width: 18px;
-  height: 18px;
-  border: 3px solid #39CC89;
-  border-top: 3px solid transparent;
+  width: 20px;
+  height: 20px;
+  border: 4px solid rgba(13, 148, 136, 0.3);
+  border-top: 4px solid #0d9488;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
@@ -93,75 +213,58 @@ button:hover {
   100% { transform: rotate(360deg); }
 }
 
-/* Card showing stock data */
-.card {
-  background-color: #1D213A;
-  border-radius: 10px;
-  padding: 20px;
-  margin-top: 30px;
-  color: white;
-  display: none;
-  text-align: left;
+@keyframes cyberPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }
 
 /* Company logo inside stock card */
 .card img {
-  width: 40px;
-  height: 40px;
+  width: clamp(40px, 8vw, 48px); /* Responsive logo size */
+  height: clamp(40px, 8vw, 48px);
   vertical-align: middle;
-  margin-right: 10px;
+  margin-right: 15px;
+  filter: drop-shadow(0 0 3px rgba(94, 234, 212, 0.3));
+  flex-shrink: 0; /* Prevent shrinking */
 }
 
-/* Stock name title inside card */
+/* FIXED: Company name - Keep logo and text side-by-side on mobile */
 .card h2 {
   display: flex;
-  align-items: center;
-  color: #39CC89;
+  align-items: center; /* Keep logo and text aligned */
+  font-size: clamp(1.2rem, 4vw, 2rem);
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(94, 234, 212, 0.3);
+  margin-bottom: 15px;
+  line-height: 1.2;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  flex-wrap: nowrap; /* FIXED: Don't allow wrapping - keep side by side */
+  gap: 10px;
+  min-height: 48px; /* Ensure consistent height */
 }
 
-/* Metrics sections */
+/* Metrics sections with controllable gaps */
 .metrics-section {
-  margin: 20px 0;
-  padding: 15px 0;
-  border-top: 1px solid #2A3048;
+  margin: 5px 0; /* 🔧 CONTROL GAP: Change this value to adjust gap between different sections */
+  padding: 5px 0; /* 🔧 CONTROL GAP: Change this value to adjust internal section padding */
+  border-top: 2px solid rgba(13, 148, 136, 0.4);
+  position: relative;
 }
 
 .metrics-section:first-of-type {
-  border-top: 1px solid #2A3048;
-  padding-top: 5px;
+  padding-top: 10px; /* 🔧 CONTROL GAP: First section top spacing */
+  margin-top: 10px;
+  border-top: 2px solid rgba(13, 148, 136, 0.4);
 }
 
-.section-title {
-  color: #5AB1F5;
-  font-size: 1.1em;
-  margin: 0 0 10px 0;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-}
-
-.info {
-  margin: 8px 0;
-  color: #FFFFFF;
-}
-
-.screener-link {
-  color: #5AB1F5;
-  text-decoration: none;
-}
-
-.screener-link:hover {
-  text-decoration: underline;
-}
-
-.error {
-  color: #F55555;
-}
-
-/* Logo image next to Stox Pulse text */
-.logo-img {
-  height: 75px;
-  width: auto;
-  margin-bottom: 3.5px;
+.metrics-section:last-of-type {
+  margin-bottom: 20px; /* 🔧 CONTROL GAP: Last section bottom spacing */
+  padding-bottom: 10px;
 }
 
 /* Header container */
@@ -169,30 +272,117 @@ button:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  margin-bottom: 20px;
+  gap: clamp(6px, 2vw, 12px);
+  margin-bottom: 30px;
+  padding: clamp(10px, 3vw, 15px);
+  background: linear-gradient(45deg, rgba(13, 148, 136, 0.05), rgba(15, 118, 110, 0.03));
+  border-radius: 15px;
+  border: 1px solid rgba(13, 148, 136, 0.1);
+  flex-wrap: nowrap;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
-/* Title text */
-.title {
-  font-size: 3em;
-  color: #39CC89;
-  margin: 0;
-  font-family: 'Saira', sans-serif;
-}
+/* SIMPLIFIED RESPONSIVE - LAPTOP AND MOBILE ONLY */
 
-/* ✅ RESPONSIVENESS (Keep logo and title side-by-side on mobile) */
-@media (max-width: 600px) {
-  .logo-img {
-    height: 50px;
+/* 🖥️ LAPTOP/DESKTOP (768px and up) */
+@media (min-width: 768px) {
+  .container {
+    width: 95%; /* Use most of screen width on laptop */
+    max-width: 1100px;
+    padding: 35px;
   }
 
   .title {
-    font-size: 1.8em;
+    white-space: nowrap; /* Single line on laptop */
+    font-size: 3.4rem;
+  }
+
+  .card {
+    max-width: 700px; /* Limit card width for readability */
+    padding: 25px;
+  }
+
+  .info {
+    font-size: 1.1em;
+  }
+
+  .section-title {
+    font-size: 1.3em;
+  }
+}
+
+/* 📱 MOBILE (767px and below) */
+@media (max-width: 767px) {
+  body {
+    padding: 10px; /* Reduce body padding on mobile */
+  }
+
+  .container {
+    width: calc(100% - 20px); /* MOBILE FIX: Account for body padding */
+    padding: 15px;
+    margin: 5px auto;
+    min-width: 280px;
+  }
+
+  .title {
+    font-size: clamp(1.4rem, 8vw, 2.2rem);
+    white-space: normal; /* Allow wrapping on mobile */
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    word-break: keep-all;
+    overflow: visible;
+    text-overflow: unset;
   }
 
   .header {
-    flex-direction: row;
-    gap: 6px;
+    gap: 8px;
+    padding: 10px;
+    flex-direction: row; /* Keep logo and title side by side */
+  }
+
+  .card {
+    padding: 15px; /* Reduced padding on mobile */
+    margin-top: 20px;
+    /* MOBILE OVERFLOW FIX: Ensure card never exceeds container */
+    max-width: calc(100% - 30px); /* Account for container padding */
+    width: calc(100% - 30px);
+  }
+
+  /* MOBILE FIX: Ensure logo and company name stay side-by-side */
+  .card h2 {
+    font-size: clamp(1.1rem, 4vw, 1.4rem); /* Slightly smaller font for better fit */
+    margin-bottom: 12px;
+    line-height: 1.1;
+    flex-wrap: nowrap; /* Force side-by-side layout */
+    align-items: center; /* Keep vertically centered */
+    justify-content: flex-start; /* Align to left */
+  }
+
+  /* Ensure company logo doesn't get too small on mobile */
+  .card img {
+    width: clamp(35px, 6vw, 42px); /* Slightly smaller but still visible */
+    height: clamp(35px, 6vw, 42px);
+    margin-right: 10px; /* Reduce margin slightly */
+    flex-shrink: 0; /* Never shrink the logo */
+  }
+
+  .info {
+    font-size: clamp(0.9rem, 3vw, 1rem); /* Smaller text on mobile */
+    margin: 6px 0; /* 🔧 MOBILE GAP: Tighter spacing between items on mobile */
+  }
+
+  .section-title {
+    font-size: clamp(1rem, 4vw, 1.2rem);
+    margin: 15px 0 10px 0; /* 🔧 MOBILE GAP: Adjust section spacing on mobile */
+  }
+
+  .metrics-section {
+    margin: 12px 0; /* 🔧 MOBILE GAP: Tighter section spacing on mobile */
+    padding: 12px 0;
+  }
+
+  .search-container {
+    margin: 0 5px; /* Small margin for mobile search */
   }
 }
