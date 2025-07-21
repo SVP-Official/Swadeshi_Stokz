@@ -15,9 +15,12 @@
     </div>
 
     <div class="search-container">
-      <input type="text" id="stockSymbol" placeholder="Enter Stock Symbol..." />
+      <input type="text" id="stockSymbol" placeholder="Enter Stock Symbol..." autocomplete="off" />
       <button onclick="searchStock()">🔍</button>
     </div>
+
+    <!-- Autocomplete dropdown -->
+    <ul class="autocomplete-suggestions" id="suggestionsList"></ul>
 
     <!-- Loader -->
     <div class="loader" id="loader">
