@@ -25,16 +25,17 @@ logging.getLogger('werkzeug').setLevel(logging.WARNING)
 # Initialize Flask app
 app = flask.Flask(__name__, static_url_path='/static')
 
-# Stock symbol validation function
+# Stock symbol validation function - UPDATED to allow numbers
 def is_valid_stock_symbol(symbol):
     """
     Validate if the input is a proper stock symbol
-    Stock symbols should be 1-10 characters, letters only, no spaces or special chars
+    Stock symbols should be 1-15 characters, alphanumeric only, no spaces or special chars
+    Examples: TCS, RELIANCE, HDFCBANK, 3MINDIA, MARICO
     """
-    if not symbol or len(symbol) < 1 or len(symbol) > 10:
+    if not symbol or len(symbol) < 1 or len(symbol) > 15:
         return False
-    # Only allow alphabetic characters (no numbers, spaces, special chars)
-    return symbol.isalpha()
+    # Allow both alphabetic characters AND numbers (no spaces, special chars)
+    return symbol.isalnum()
 
 # Function to clean percentage values (remove double %)
 def clean_percentage_value(value):
@@ -160,7 +161,7 @@ def get_alternative_financial_data(symbol):
         logger.error(f"Error in alternative data fetch: {str(e)}")
         return {}
 
-# Function to fetch stock data from Screener.in
+# Clean and streamlined data extraction function
 def fetch_stock_data(symbol):
     try:
         # Build Screener.in URL for the stock
@@ -168,35 +169,61 @@ def fetch_stock_data(symbol):
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
         }
-        response = requests.get(url, headers=headers, timeout=10)
 
-        # Check if the stock page exists (Screener.in returns 404 for invalid symbols)
+        response = requests.get(url, headers=headers, timeout=15)
+
+        # Check for HTTP errors first
         if response.status_code == 404:
             return {"error": "Stock symbol not found"}
+
+        if response.status_code != 200:
+            return {"error": "Network error occurred"}
 
         # Parse HTML content
         soup = BeautifulSoup(response.text, "html.parser")
 
-        # Extract company name from h1 tag
-        name_tag = soup.find("h1")
-        name = name_tag.text.strip() if name_tag else "N/A"
+        # Check page title for error indicators
+        title_tag = soup.find("title")
+        title_text = title_tag.text.strip() if title_tag else "No title"
 
-        # Additional validation: Check if we're actually on a stock page
-        if name == "N/A" or "Page not found" in response.text or "404" in response.text:
+        # Specific error detection - only check for real error indicators
+        if ("404" in title_text.lower() or 
+            "not found" in title_text.lower() or
+            "error" in title_text.lower()):
             return {"error": "Stock symbol not found"}
 
-        # Extract current stock price
-        price = "N/A"
-        for li in soup.find_all("li"):
-            if "Current Price" in li.get_text():
-                number_span = li.find("span", class_="number")
-                if number_span:
-                    price = number_span.text.strip()
+        # Look for company name - this is the most reliable indicator
+        name = "N/A"
+        name_tag = soup.find("h1")
+        if name_tag:
+            name = name_tag.text.strip()
+
+        # Alternative methods to find company name if h1 fails
+        if not name or name == "N/A" or len(name.strip()) == 0:
+            # Try to find it in different locations
+            for tag in soup.find_all(["h1", "h2"]):
+                if tag and tag.text.strip() and len(tag.text.strip()) > 2:
+                    name = tag.text.strip()
                     break
 
-        # Additional validation: A valid stock should have at least a price
-        if price == "N/A":
+        # If still no name found, this might not be a valid stock page
+        if not name or name == "N/A" or len(name.strip()) < 2:
             return {"error": "Stock symbol not found"}
+
+        # Extract current stock price - IMPROVED SEARCH
+        price = "N/A"
+        price_patterns = ["Current Price", "Stock Price", "Share Price", "Price"]
+
+        for pattern in price_patterns:
+            for li in soup.find_all("li"):
+                li_text = li.get_text()
+                if pattern in li_text:
+                    number_span = li.find("span", class_="number")
+                    if number_span and number_span.text.strip():
+                        price = number_span.text.strip()
+                        break
+            if price != "N/A":
+                break
 
         # Extract Market Cap from li elements
         market_cap = "N/A"
@@ -332,35 +359,37 @@ def fetch_stock_data(symbol):
             "debt_to_equity": debt_to_equity
         }
 
+    except requests.exceptions.Timeout:
+        return {"error": "Request timed out. Please try again."}
     except requests.exceptions.RequestException as e:
         logger.error(f"Network error in fetch_stock_data(): {str(e)}")
         return {"error": "Network connection failed"}
     except Exception as e:
         logger.error(f"Error in fetch_stock_data(): {str(e)}")
-        return {"error": str(e)}
+        return {"error": f"Unexpected error: {str(e)}"}
 
 # Route for serving the main HTML page
 @app.route('/')
 def index():
     return render_template('index.html')
 
-# API endpoint for fetching stock data
+# API endpoint for fetching stock data - UPDATED validation message
 @app.route('/api/screener/<symbol>')
 def screener(symbol):
     try:
         # Validate stock symbol format
         if not is_valid_stock_symbol(symbol):
-            return jsonify({"error": "Please enter a valid stock symbol (letters only, 1-10 characters)"}), 400
+            return jsonify({"error": "Please enter a valid stock symbol (letters and numbers only, 1-15 characters)"}), 400
 
         # Fetch stock data
         data = fetch_stock_data(symbol.upper())
 
         # Return error if data fetching failed or stock not found
         if "error" in data:
-            if "not found" in data["error"]:
+            if "not found" in data["error"].lower():
                 return jsonify({"error": f"'{symbol.upper()}' is not a valid stock symbol. Please check and try again."}), 404
             else:
-                return jsonify({"error": "Unable to fetch stock data. Please try again."}), 500
+                return jsonify({"error": data["error"]}), 500
 
         return jsonify(data)
 
