@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Stox Pulse</title>
   <link rel="stylesheet" href="/static/styles.css" />
   <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="container">
@@ -14,56 +15,62 @@
       <h1 class="title">StoxPulse</h1>
     </div>
 
+    <!-- Search -->
     <div class="search-container">
       <input type="text" id="stockSymbol" placeholder="Enter Stock Symbol..." autocomplete="off" />
       <button onclick="searchStock()">🔍</button>
     </div>
 
-    <!-- Autocomplete dropdown -->
+    <!-- Autocomplete -->
     <ul class="autocomplete-suggestions" id="suggestionsList"></ul>
 
     <!-- Loader -->
-    <div class="loader" id="loader">
-      <div class="spinner"></div>
-      <span>Loading...</span>
+    <div class="loader fade-in" id="loader">
+      <div class="loader-inner">
+        <div class="spinner"></div>
+        <span>Loading...</span>
+      </div>
     </div>
 
     <!-- Result Card -->
-    <div class="card" id="resultCard">
+    <div class="card fade-in" id="resultCard">
       <h2><img id="stockLogo" src="" alt="" /> <span id="stockName"></span></h2>
-
-      <!-- Basic Price Information -->
       <p class="info" id="stockPrice"></p>
       <p class="info" id="marketCap"></p>
 
-      <!-- Valuation Metrics Section -->
+      <!-- Valuation -->
       <div class="metrics-section">
         <h3 class="section-title">📊 Valuation Metrics</h3>
         <p class="info" id="peRatio"></p>
         <p class="info" id="bookValue"></p>
       </div>
 
-      <!-- Profitability & Returns Section -->
+      <!-- Returns -->
       <div class="metrics-section">
         <h3 class="section-title">💰 Profitability & Returns</h3>
         <p class="info" id="roe"></p>
         <p class="info" id="dividendYield"></p>
       </div>
 
-      <!-- Shareholding Pattern Section -->
+      <!-- Shareholding -->
       <div class="metrics-section">
         <h3 class="section-title">🏢 Shareholding Pattern</h3>
         <p class="info" id="promoterHolding"></p>
         <p class="info" id="fiiHolding"></p>
       </div>
 
-      <!-- External Link -->
+      <!-- Link -->
       <p class="info">
         <a id="screenerLink" href="#" class="screener-link" target="_blank">More on Screener.in</a>
       </p>
     </div>
 
-    <!-- Error Message -->
+    <!-- Chart Section (Hidden by default) -->
+    <div class="chart-section fade-in" id="chartSection" style="display:none;">
+      <canvas id="stockChart" width="100%" height="280"></canvas>
+    </div>
+
+    <!-- Error -->
     <p class="error" id="errorMessage"></p>
   </div>
 
